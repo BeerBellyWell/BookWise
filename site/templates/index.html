@@ -5,4 +5,9 @@
 
 {% block content %}
     <h1>Главная страница</h1>
+    <ul>
+        {% for quote in quotes %}
+            <li>{{quote.text}}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

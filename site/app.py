@@ -17,8 +17,8 @@ class Quote(db.Model):
 
 @app.route('/')
 def hello():
-    print(app.config)
-    return render_template('index.html')
+    quotes = Quote.query.all()
+    return render_template('index.html', quotes=quotes)
 
 if __name__ == '__main__':
     app.run(debug=True)
