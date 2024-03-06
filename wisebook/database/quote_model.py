@@ -8,6 +8,5 @@ class Quote(db.Model):
     book_author = db.Column(db.String(128), nullable=False)
     create_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     like = db.Column(db.Integer, default=0, nullable=False)
-    # last_update = db.Column(db.DateTime, onupdate=db.func.current_timestamp())
-    # is_published = db.Column(db.Boolean, default=True)
+    # добавить поле last_update и is_published
 
