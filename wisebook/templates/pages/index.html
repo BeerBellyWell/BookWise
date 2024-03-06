@@ -4,13 +4,15 @@
 {% endblock %}
 
 {% block content %}
-    <!--<h1>Главная страница</h1>
+    {% if not quotes %}
+        Quotes not found
+    {% endif %}
     <ul>
         {% for quote in quotes %}
-            <li>{{quote.text}}</li>
+            <li>{{quote.quote}}</li>
         {% endfor %}
-    </ul>-->
-    <main>
+    </ul>
+    <!--<main>
         <div class="container">
             <div class="news-feed">
                 <div class="news-item">
@@ -30,5 +32,5 @@
                 </div>
             </div>
         </div>
-    </main>
+    </main>-->
 {% endblock %}
