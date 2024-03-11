@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}
-    Добавить цитату
-{% endblock %}
-
+{% block title %} Добавить цитату {% endblock %}
 {% block content %}
 <form method="POST" novalidate>
     {{ form.csrf_token }}
@@ -15,15 +12,21 @@
       {% endif %}
     </p>
     {{ form.book_name(class="form-control form-control-lg py-3 mb-3", placeholder=form.book_name.label.text) }}
-    <p></p>
+    <p class="text-danger">
+      {% if form.book_name.errors %}
+        {% for error in form.book_name.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </p>
     {{ form.book_author(class="form-control form-control-lg py-3 mb-3", placeholder=form.book_author.label.text, rows="3", cols="40")}}
     <p class="text-danger">
       {% if form.book_author.errors %}
-        {% for error in form.text.errors %}
+        {% for error in form.book_author.errors %}
           {{ error }}
         {% endfor %}
       {% endif %}
     </p>
     {{ form.submit(class="button px-5 py-3 btn") }}
-  </form>
+</form>
 {% endblock %}
