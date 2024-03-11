@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}
-    Добавить цитату
-{% endblock %}
-
+{% block title %} Добавить цитату {% endblock %}
 {% block content %}
 <form method="POST" novalidate>
     {{ form.csrf_token }}
@@ -31,5 +28,5 @@
       {% endif %}
     </p>
     {{ form.submit(class="button px-5 py-3 btn") }}
-  </form>
+</form>
 {% endblock %}

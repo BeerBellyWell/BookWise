@@ -35,9 +35,15 @@
       <li><a href="#" class="nav-link px-2 link-secondary">About</a></li>
     </ul>
 
+    {% if current_user.is_authenticated %}
     <div class="col-md-3 text-end">
-      <button type="button" class="btn btn-outline-primary me-2">Login</button>
-      <button type="button" class="btn btn-primary">Sign-up</button>
+      <a href="{{ url_for('logout') }}" class="btn btn-primary">Logout</a>
     </div>
+    {% else %}
+    <div class="col-md-3 text-end">
+      <a href="{{ url_for('login') }}" class="btn btn-outline-primary me-2">Login</a>
+      <a href="{{ url_for('register') }}" class="btn btn-primary">Sign-up</a>
+    </div>
+    {% endif %}
   </header>
 </div>
