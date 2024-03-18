@@ -1,8 +1,8 @@
-from flask import render_template, redirect, url_for, request
-from flask_login import login_user, logout_user, login_required
+from flask import render_template, redirect, url_for, jsonify, request
+from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from wisebook.database.quote_model import Quote, User
+from wisebook.database.quote_model import Quote, User, Like
 from wisebook import app, db, login_manager
 from wisebook.forms import QuoteForm, RegisterForm, LoginForm
 
@@ -26,12 +26,39 @@ def add_quote():
         quote = Quote(
             quote = form.quote.data,
             book_name = form.book_name.data,
-            book_author = form.book_author.data
+            book_author = form.book_author.data,
+            user_id = current_user.id
         )
         db.session.add(quote)
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('pages/add_quote.html', form=form)
+
+
+@app.route('/like_quote/<int:quote_id>', methods=['POST', 'GET'])
+@login_required
+def like_quote(quote_id):
+    quote = Quote.query.get_or_404(quote_id)
+    like = Like.query.filter_by(user_id=current_user.id, quote_id=quote.id).first()
+    if like:
+        db.session.delete(like)
+        quote.like_count -= 1
+        db.session.commit()
+        context = {
+            'message': 'Лайк убран',
+            'like_count': quote.like_count
+        }
+        return jsonify(context)
+    else:
+        new_like = Like(user_id=current_user.id, quote_id=quote.id)
+        quote.like_count += 1
+        db.session.add(new_like)
+        db.session.commit()
+        context = {
+            'message': 'Лайк поставлен',
+            'like_count': quote.like_count
+        }
+        return jsonify(context)
 
 
 @app.route('/register', methods=['GET', 'POST'])
