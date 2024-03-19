@@ -19,6 +19,16 @@
         {% endfor %}
       {% endif %}
     </p>
-    {{ form.submit(class="button px-5 py-3 btn") }}
+    
+    <div class="container">
+      {{ form.submit(class="button px-5 py-3 btn") }}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              {% for category, message in messages %}
+                <span style="color: red">{{ message }}</span>
+              {% endfor %}
+          {% endif %}
+      {% endwith %}
+  </div>
 </form>
 {% endblock %}
