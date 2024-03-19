@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, jsonify, request
+from flask import render_template, redirect, url_for, jsonify, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -14,7 +14,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    quotes = Quote.query.all()
+    quotes = Quote.query.order_by(Quote.create_at.desc()).all()
     return render_template('pages/index.html', quotes=quotes)
 
 
@@ -89,7 +89,8 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for('index'))
-        return render_template('pages/login.html', form=form)
+        flash('Неверное имя пользователя или пароль', 'error')
+        # return render_template('pages/login.html', form=form)
     return render_template('pages/login.html', form=form)
 
 
@@ -97,5 +98,4 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return render_template('pages/index.html')
-    # return render_template('pages/logout.html')
+    return redirect(url_for('index'))
