@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{current_user.username}}
+{% endblock %}
+{% block content %}
+{% if not users_quotes %}
+Quotes not found
+{% endif %}
+<ul>
+{% for quote in users_quotes %}
+    <div class='card'>
+        <div class='card-header'>
+            Цитата от {{ quote.author.username }} {{ quote.create_at }}
+        </div>
+        <div class='card-body'>
+            <blockquote class='blockquote mb-0'>
+                <p> {{ quote.quote }} </p>
+                <footer class='blockquote-footer'> {{ quote.book_name }},
+                    <cite title='Заголовок источника'> {{ quote.book_author }} </cite>
+                </footer>
+                {% if current_user.is_authenticated %}
+                <form id="like-form-{{ quote.id }}" onsubmit="likeQuote({{ quote.id }}); return false;">
+                <!--<form id="like-form-{{ quote.id }}" onsubmit="likeQuote(event, {{ quote.id }})"> -->
+                    <button type="submit" class="btn btn-primary">
+                        {% if quote.likes|length and current_user.id in quote.likes|map(attribute='user_id')|list %}
+                            Unlike
+                        {% else %}
+                            Like
+                        {% endif %}
+                    </button>
+                    <span id="like-count-{{ quote.id }}"> {{ quote.like_count }} </span>
+                </form>
+                {% endif %}
+            </blockquote>
+        </div>
+    </div>
+{% endfor %}
+</ul>
+
+<script>
+    function likeQuote(quoteId) {
+        fetch('/like_quote/' + quoteId, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            const likeCountElement = document.getElementById('like-count-' + quoteId);
+            likeCountElement.innerText = data.like_count;
+            const likeForm = document.getElementById('like-form-' + quoteId);
+            if (data.message === 'Цитата лайкнута успешно') {
+                likeForm.querySelector('button').innerText = 'Unlike';
+            } else {
+                likeForm.querySelector('button').innerText = 'Like';
+            }
+        });
+    }
+</script>
+{% endblock %}

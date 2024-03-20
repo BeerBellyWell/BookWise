@@ -31,7 +31,7 @@
       <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
       <li><a href="{{ url_for('index') }}" class="nav-link px-2">Home</a></li>
       <li><a href="{{ url_for('add_quote') }}" class="nav-link px-2">Добавить цитату</a></li>
-      <li><a href="#" class="nav-link px-2 link-secondary">FAQs</a></li>
+      <li><a href="{{ url_for('profile', username=current_user.username)}}" class="nav-link px-2 link-secondary">Profile</a></li>
       <li><a href="#" class="nav-link px-2 link-secondary">About</a></li>
     </ul>
 

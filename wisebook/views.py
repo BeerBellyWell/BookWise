@@ -90,7 +90,6 @@ def login():
             login_user(user)
             return redirect(url_for('index'))
         flash('Неверное имя пользователя или пароль', 'error')
-        # return render_template('pages/login.html', form=form)
     return render_template('pages/login.html', form=form)
 
 
@@ -99,3 +98,11 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/profile/<username>')
+@login_required
+def profile(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    users_quotes = Quote.query.filter_by(user_id=user.id).all()
+    return render_template('pages/profile.html', users_quotes=users_quotes)
