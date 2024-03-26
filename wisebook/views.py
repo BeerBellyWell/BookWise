@@ -7,6 +7,12 @@ from wisebook import app, db, login_manager
 from wisebook.forms import QuoteForm, RegisterForm, LoginForm
 
 
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db, 'Quote': Quote,
+            'User': User, 'Like': Like}
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
