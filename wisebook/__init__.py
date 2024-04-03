@@ -17,4 +17,4 @@ login_manager.login_view = 'login'
 
 
 from wisebook import views
-from wisebook.database import quote_model
+from wisebook.database import models

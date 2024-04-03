@@ -3,6 +3,25 @@
     {{current_user.username}}
 {% endblock %}
 {% block content %}
+
+<div class="profile-header">
+    <div class="profile-avatar">
+        {% if user.avatar_filename %}
+            <img src="{{ url_for('static', filename='uploads/avatars/' + user.avatar_filename) }}" alt="User Avatar">
+        {% else %}
+            <img src="{{ url_for('static', filename='uploads/avatars/default/default_avatar.jpg') }}">
+        {% endif %}
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('upload_avatar') }}">
+            <input type="file" name="avatar" id="avatar" accept="image/*">
+            <input type="submit" value="Upload Avatar">
+        </form>
+    </div>
+    <div class="profile-info">
+        <h1>{{ user.username }}'s Profile</h1>
+        
+    </div>
+</div>
+
 {% if not users_quotes %}
 Quotes not found
 {% endif %}

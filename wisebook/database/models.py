@@ -11,8 +11,7 @@ class Quote(db.Model):
     create_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     like_count = db.Column(db.Integer, default=0, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # добавить поля last_update и is_published, а также FK
-    # Отношение для связи с лайками
+    # добавить поля last_update и is_published
     likes = db.relationship('Like', backref='quote', lazy=True)
 
 
@@ -20,6 +19,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    avatar_filename = db.Column(db.String(100), nullable=True)
     quotes = db.relationship('Quote', backref='author', lazy=True)
 
 
