@@ -1,8 +1,11 @@
+import os
+
 from flask import render_template, redirect, url_for, jsonify, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
-from wisebook.database.quote_model import Quote, User, Like
+from wisebook.database.models import Quote, User, Like
 from wisebook import app, db, login_manager
 from wisebook.forms import QuoteForm, RegisterForm, LoginForm
 
@@ -110,5 +113,36 @@ def logout():
 @login_required
 def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
-    users_quotes = Quote.query.filter_by(user_id=user.id).all()
-    return render_template('pages/profile.html', users_quotes=users_quotes)
+    users_quotes = Quote.query.filter_by(user_id=user.id).order_by(Quote.create_at.desc()).all()
+    return render_template('pages/profile.html', users_quotes=users_quotes, user=user)
+
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload_avatar', methods=['POST', 'GET'])
+@login_required
+def upload_avatar():
+    if 'avatar' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['avatar']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+        # return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(filename)))
+        current_user.avatar_filename = filename
+        db.session.commit()
+        flash('Avatar uploaded successfully')
+        return redirect(url_for('profile', username=current_user.username))
+    else:
+        flash('Invalid file type')
+        return redirect(request.url)
